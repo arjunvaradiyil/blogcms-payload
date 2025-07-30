@@ -1,6 +1,5 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
@@ -9,9 +8,8 @@ import React from 'react'
 import PageClient from './page.client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, Clock, User, ArrowRight, Search, Tag, Filter, BookOpen } from 'lucide-react'
+import { Calendar, User, Search, Filter, BookOpen, Tag } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-static'

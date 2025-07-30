@@ -18,8 +18,8 @@ export default function Page() {
       <section className="hero-gradient py-16 px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white">Search Articles</h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Find the perfect article with our powerful search functionality
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+            Discover amazing stories, insights, and knowledge from our community of writers
           </p>
         </div>
       </section>
@@ -114,8 +114,8 @@ export default function Page() {
 
                     <p className="text-muted-foreground mb-4 line-clamp-3">
                       Learn the fundamentals of modern web development with this comprehensive
-                      guide. We'll cover everything from HTML and CSS to JavaScript frameworks and
-                      deployment strategies.
+                      guide. We&apos;ll cover everything from HTML and CSS to JavaScript frameworks
+                      and deployment strategies.
                     </p>
 
                     <div className="flex items-center justify-between">
@@ -167,7 +167,7 @@ export default function Page() {
                 <SearchIcon className="h-12 w-12 text-primary mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Use Keywords</h3>
                 <p className="text-muted-foreground">
-                  Search for specific terms, topics, or technologies you're interested in
+                  Search for specific terms, topics, or technologies you&apos;re interested in
                 </p>
               </Card>
               <Card className="p-6 text-center">

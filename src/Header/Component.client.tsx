@@ -6,10 +6,8 @@ import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 
-import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav'
 import { Button } from '@/components/ui/button'
-import { Search, Menu, X, BookOpen, User } from 'lucide-react'
+import { Search, Menu, X, BookOpen } from 'lucide-react'
 
 interface HeaderClientProps {
   data: Header

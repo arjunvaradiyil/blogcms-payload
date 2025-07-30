@@ -4,26 +4,11 @@ import configPromise from '@payload-config'
 import { generateMeta } from '@/utilities/generateMeta'
 import { homeStatic } from '@/endpoints/seed/home-static'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
-import { RenderHero } from '@/heros/RenderHero'
-import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { draftMode } from 'next/headers'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import {
-  Calendar,
-  ArrowRight,
-  BookOpen,
-  Search,
-  Tag,
-  User,
-  Menu,
-  Heart,
-  Share2,
-  MoreVertical,
-  ArrowLeft,
-  Headphones,
-} from 'lucide-react'
+import { Calendar, ArrowRight, BookOpen, Search, User } from 'lucide-react'
 import { cache } from 'react'
 
 export const dynamic = 'force-static'
@@ -102,7 +87,7 @@ export default async function HomePage() {
     })),
   )
 
-  const { hero, layout } = page
+  const { hero: _hero, layout: _layout } = page
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -150,7 +135,7 @@ export default async function HomePage() {
 
               {/* Articles Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredPosts.docs.map((post, index) => (
+                {featuredPosts.docs.map((post, _index) => (
                   <Link key={post.id} href={`/posts/${post.slug}`} className="group">
                     <article className="bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-gray-700 hover:border-blue-500/30 h-[500px] flex flex-col">
                       {/* Article Image */}

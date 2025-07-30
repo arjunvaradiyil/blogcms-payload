@@ -5,11 +5,9 @@ import React from 'react'
 import type { Footer } from '@/payload-types'
 
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
-import { CMSLink } from '@/components/Link'
-import { Logo } from '@/components/Logo/Logo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Heart, ArrowRight } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Linkedin, Heart, ArrowRight } from 'lucide-react'
 
 export async function Footer() {
   const footerData: Footer = await getCachedGlobal('footer', 1)()

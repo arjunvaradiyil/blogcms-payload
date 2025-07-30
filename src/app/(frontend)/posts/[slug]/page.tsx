@@ -1,29 +1,35 @@
 import type { Metadata } from 'next/types'
+
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { generateMeta } from '@/utilities/generateMeta'
+import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
 import {
+  Calendar,
+  ArrowRight,
+  Search,
+  Filter,
+  BookOpen,
+  Tag,
+  User,
   ArrowLeft,
   Headphones,
   Share2,
   MoreVertical,
-  User,
-  Calendar,
-  Tag,
   Heart,
-  BookOpen,
 } from 'lucide-react'
+import Link from 'next/link'
 import { cache } from 'react'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
 
-const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryPostBySlug = async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
   const payload = await getPayload({ config: configPromise })
   const result = await payload.find({
@@ -39,7 +45,7 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
     },
   })
   return result.docs?.[0] || null
-})
+}
 
 type Args = {
   params: Promise<{
