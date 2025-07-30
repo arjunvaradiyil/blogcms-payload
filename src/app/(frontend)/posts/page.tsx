@@ -4,8 +4,6 @@ import type { Metadata } from 'next/types'
 
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
 import React, { useState, useEffect } from 'react'
 import PageClient from './page.client'
 import { Button } from '@/components/ui/button'
@@ -13,9 +11,6 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, User, Search, Filter, BookOpen, Tag, X } from 'lucide-react'
 import Link from 'next/link'
-
-export const dynamic = 'force-static'
-export const revalidate = 600
 
 export default function Page() {
   const [posts, setPosts] = useState<any[]>([])
@@ -28,42 +23,16 @@ export default function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const payload = await getPayload({ config: configPromise })
+        const response = await fetch('/api/posts')
+        const data = await response.json()
 
-        const [postsData, categoriesData] = await Promise.all([
-          payload.find({
-            collection: 'posts',
-            depth: 1,
-            limit: 12,
-            overrideAccess: false,
-            where: {
-              _status: {
-                equals: 'published',
-              },
-            },
-            sort: '-publishedAt',
-            select: {
-              title: true,
-              slug: true,
-              categories: true,
-              meta: true,
-              publishedAt: true,
-              createdAt: true,
-              authors: true,
-              heroImage: true,
-            },
-          }),
-          payload.find({
-            collection: 'categories',
-            depth: 0,
-            limit: 100,
-            overrideAccess: false,
-          }),
-        ])
-
-        setPosts(postsData.docs)
-        setFilteredPosts(postsData.docs)
-        setCategories(categoriesData.docs)
+        if (data.success) {
+          setPosts(data.data.posts)
+          setFilteredPosts(data.data.posts)
+          setCategories(data.data.categories)
+        } else {
+          console.error('Failed to fetch posts:', data.error)
+        }
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -79,16 +48,18 @@ export default function Page() {
 
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter((post) =>
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (post.meta?.description && post.meta.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      filtered = filtered.filter(
+        (post) =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (post.meta?.description &&
+            post.meta.description.toLowerCase().includes(searchQuery.toLowerCase())),
       )
     }
 
     // Filter by category
     if (selectedCategory) {
       filtered = filtered.filter((post) =>
-        post.categories?.some((cat: any) => cat.title === selectedCategory)
+        post.categories?.some((cat: any) => cat.title === selectedCategory),
       )
     }
 
@@ -220,11 +191,11 @@ export default function Page() {
                               post.heroImage.url
                                 ? `url('${post.heroImage.url}')`
                                 : post.meta?.image &&
-                                  typeof post.meta.image === 'object' &&
-                                  'url' in post.meta.image &&
-                                  post.meta.image.url
-                                ? `url('${post.meta.image.url}')`
-                                : `url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')`,
+                                    typeof post.meta.image === 'object' &&
+                                    'url' in post.meta.image &&
+                                    post.meta.image.url
+                                  ? `url('${post.meta.image.url}')`
+                                  : `url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')`,
                           }}
                         />
                         {/* Category Badge */}
@@ -266,9 +237,7 @@ export default function Page() {
 
                         {/* Article Description */}
                         {post.meta?.description && (
-                          <p className="text-gray-300 mb-3 flex-1">
-                            {post.meta.description}
-                          </p>
+                          <p className="text-gray-300 mb-3 flex-1">{post.meta.description}</p>
                         )}
 
                         {/* Read More */}

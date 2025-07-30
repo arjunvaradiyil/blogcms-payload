@@ -56,9 +56,7 @@ export default function Page() {
               <Card className="p-6 text-center bg-gray-800 border-gray-700">
                 <User className="h-12 w-12 text-purple-500 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2 text-white">Search by Author</h3>
-                <p className="text-gray-300">
-                  Find all articles written by your favorite authors
-                </p>
+                <p className="text-gray-300">Find all articles written by your favorite authors</p>
               </Card>
             </div>
           </div>
