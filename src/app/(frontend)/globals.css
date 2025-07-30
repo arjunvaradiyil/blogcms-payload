@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Mobile-first blog card styles */
+  .mobile-blog-card {
+    @apply bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl;
+  }
+
+  .mobile-blog-card-featured {
+    @apply relative h-48 bg-cover bg-center rounded-xl overflow-hidden;
+  }
+
+  .mobile-blog-card-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent;
+  }
+
+  .mobile-blog-card-content {
+    @apply absolute bottom-0 left-0 right-0 p-4 text-white;
+  }
+
+  .mobile-blog-card-small {
+    @apply bg-gray-800 rounded-lg shadow-md overflow-hidden;
+  }
+
+  .mobile-blog-card-small-image {
+    @apply w-full h-24 bg-cover bg-center;
+  }
+
+  .mobile-section {
+    @apply mb-8;
+  }
+
+  .mobile-section-header {
+    @apply text-xl font-bold text-white mb-4;
+  }
+
+  .mobile-section-grid {
+    @apply grid grid-cols-2 gap-3;
+  }
+
+  .mobile-tag {
+    @apply bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full;
+  }
+
+  .mobile-article-hero {
+    @apply relative h-64 bg-cover bg-center;
+  }
+
+  .mobile-article-meta {
+    @apply absolute top-4 left-4 right-4 flex justify-between items-center text-white;
+  }
+
+  .mobile-article-author {
+    @apply flex items-center space-x-2;
+  }
+
+  .mobile-article-author-avatar {
+    @apply w-8 h-8 rounded-full bg-white/20;
+  }
+
+  /* Modern card styles */
+  .blog-card {
+    @apply bg-gray-800 border border-gray-700 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-primary/20;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300;
+  }
+
+  .hero-gradient {
+    @apply bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900;
+  }
+
+  /* Mobile header styles */
+  .mobile-header {
+    @apply fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-700;
+  }
+
+  .mobile-nav {
+    @apply flex items-center justify-between p-4;
+  }
+
+  /* Mobile search styles */
+  .mobile-search {
+    @apply bg-gray-800 rounded-xl shadow-lg p-4 mb-6;
+  }
+
+  .mobile-search-input {
+    @apply w-full px-4 py-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+
+  /* Mobile article styles */
+  .mobile-article-content {
+    @apply bg-gray-800 rounded-t-3xl -mt-6 relative z-10 p-6;
+  }
+
+  .mobile-article-actions {
+    @apply flex items-center justify-between py-4 border-t border-gray-700;
+  }
+
+  .mobile-action-btn {
+    @apply flex items-center space-x-2 text-gray-300 hover:text-white transition-colors;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+}
