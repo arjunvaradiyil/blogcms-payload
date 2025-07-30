@@ -1,53 +1,115 @@
+'use client'
+
 import type { Metadata } from 'next/types'
 
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PageClient from './page.client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, User, Search, Filter, BookOpen, Tag } from 'lucide-react'
+import { Calendar, User, Search, Filter, BookOpen, Tag, X } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
 
-export default async function Page() {
-  const payload = await getPayload({ config: configPromise })
+export default function Page() {
+  const [posts, setPosts] = useState<any[]>([])
+  const [filteredPosts, setFilteredPosts] = useState<any[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [categories, setCategories] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const posts = await payload.find({
-    collection: 'posts',
-    depth: 1,
-    limit: 12,
-    overrideAccess: false,
-    where: {
-      _status: {
-        equals: 'published',
-      },
-    },
-    sort: '-publishedAt',
-    select: {
-      title: true,
-      slug: true,
-      categories: true,
-      meta: true,
-      publishedAt: true,
-      createdAt: true,
-      authors: true,
-      heroImage: true,
-    },
-  })
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const payload = await getPayload({ config: configPromise })
 
-  // Get categories for filtering
-  const categories = await payload.find({
-    collection: 'categories',
-    depth: 0,
-    limit: 100,
-    overrideAccess: false,
-  })
+        const [postsData, categoriesData] = await Promise.all([
+          payload.find({
+            collection: 'posts',
+            depth: 1,
+            limit: 12,
+            overrideAccess: false,
+            where: {
+              _status: {
+                equals: 'published',
+              },
+            },
+            sort: '-publishedAt',
+            select: {
+              title: true,
+              slug: true,
+              categories: true,
+              meta: true,
+              publishedAt: true,
+              createdAt: true,
+              authors: true,
+              heroImage: true,
+            },
+          }),
+          payload.find({
+            collection: 'categories',
+            depth: 0,
+            limit: 100,
+            overrideAccess: false,
+          }),
+        ])
+
+        setPosts(postsData.docs)
+        setFilteredPosts(postsData.docs)
+        setCategories(categoriesData.docs)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    let filtered = posts
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter((post) =>
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (post.meta?.description && post.meta.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    }
+
+    // Filter by category
+    if (selectedCategory) {
+      filtered = filtered.filter((post) =>
+        post.categories?.some((cat: any) => cat.title === selectedCategory)
+      )
+    }
+
+    setFilteredPosts(filtered)
+  }, [posts, searchQuery, selectedCategory])
+
+  const clearFilters = () => {
+    setSearchQuery('')
+    setSelectedCategory('')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="text-gray-400 mt-4">Loading posts...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -69,183 +131,161 @@ export default async function Page() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-3 rounded-lg border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-500 transition-colors"
                 />
               </div>
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 border-gray-600 text-white hover:bg-gray-700"
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-4 py-3 rounded-lg border-2 border-gray-600 bg-gray-800 text-white focus:border-blue-500 focus:outline-none"
                 >
-                  <Filter className="h-4 w-4" />
-                  Filter
-                </Button>
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
-                  <Search className="h-4 w-4 mr-2" />
-                  Search
-                </Button>
+                  <option value="">All Categories</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.title}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
+                {(searchQuery || selectedCategory) && (
+                  <Button
+                    onClick={clearFilters}
+                    variant="outline"
+                    className="flex items-center gap-2 border-gray-600 text-white hover:bg-gray-700"
+                  >
+                    <X className="h-4 w-4" />
+                    Clear
+                  </Button>
+                )}
               </div>
             </div>
 
-            {/* Category Filters */}
-            <div className="flex flex-wrap gap-2 justify-center mt-6">
-              <Badge
-                variant="secondary"
-                className="cursor-pointer hover:bg-blue-600 hover:text-white transition-colors bg-gray-700 text-white"
-              >
-                All Posts
-              </Badge>
-              {categories.docs.map((category) => (
-                <Badge
-                  key={category.id}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-blue-600 hover:text-white transition-colors border-gray-600 text-white"
-                >
-                  {category.title}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Posts Grid */}
-      <section className="py-16 bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <PageRange
-              collection="posts"
-              currentPage={posts.page}
-              limit={12}
-              totalDocs={posts.totalDocs}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {posts.docs.map((post, index) => (
-              <Link key={post.id} href={`/posts/${post.slug}`} className="block">
-                <article
-                  className="bg-gray-800 border border-gray-700 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-blue-500/20 cursor-pointer h-[400px] flex flex-col"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="mb-4 flex-shrink-0">
-                    {post.heroImage &&
-                    typeof post.heroImage === 'object' &&
-                    'url' in post.heroImage &&
-                    post.heroImage.url ? (
-                      <div className="aspect-video bg-gray-700 rounded-lg mb-4 overflow-hidden">
-                        <img
-                          src={post.heroImage.url}
-                          alt={post.title || 'Blog post'}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ) : post.meta?.image &&
-                      typeof post.meta.image === 'object' &&
-                      'url' in post.meta.image &&
-                      post.meta.image.url ? (
-                      <div className="aspect-video bg-gray-700 rounded-lg mb-4 overflow-hidden">
-                        <img
-                          src={post.meta.image.url}
-                          alt={post.title || 'Blog post'}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-gray-700 rounded-lg mb-4 overflow-hidden flex items-center justify-center">
-                        <BookOpen className="w-12 h-12 text-gray-500" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-4 text-sm text-gray-400 mb-3 flex-shrink-0">
-                    {post.publishedAt && (
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(post.publishedAt).toLocaleDateString()}
-                      </div>
-                    )}
-                    {post.categories &&
-                      post.categories.length > 0 &&
-                      typeof post.categories[0] === 'object' &&
-                      'title' in post.categories[0] && (
-                        <div className="flex items-center gap-1">
-                          <Tag className="h-4 w-4" />
-                          {post.categories[0].title}
-                        </div>
-                      )}
-                  </div>
-
-                  <h3 className="font-semibold text-lg mb-2 text-white flex-1">{post.title}</h3>
-
-                  {post.meta?.description && (
-                    <p className="text-gray-300 mb-3 flex-1">{post.meta.description}</p>
-                  )}
-
-                  <div className="flex items-center justify-between text-sm text-gray-400 mt-auto">
-                    <div className="flex items-center space-x-4">
-                      <span className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        {post.publishedAt
-                          ? new Date(post.publishedAt).toLocaleDateString()
-                          : 'Recent'}
-                      </span>
-                      {post.authors &&
-                        post.authors.length > 0 &&
-                        typeof post.authors[0] === 'object' &&
-                        'name' in post.authors[0] && (
-                          <span className="flex items-center">
-                            <User className="w-4 h-4 mr-1" />
-                            {post.authors[0].name}
-                          </span>
-                        )}
-                    </div>
-                    {post.categories &&
-                      post.categories.length > 0 &&
-                      typeof post.categories[0] === 'object' &&
-                      'title' in post.categories[0] && (
-                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                          {post.categories[0].title}
-                        </span>
-                      )}
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center">
-            {posts.totalPages > 1 && posts.page && (
-              <Pagination page={posts.page} totalPages={posts.totalPages} />
+            {/* Active Filters */}
+            {(searchQuery || selectedCategory) && (
+              <div className="flex flex-wrap gap-2 justify-center mt-4">
+                {searchQuery && (
+                  <Badge variant="secondary" className="bg-blue-600 text-white">
+                    Search: {searchQuery}
+                  </Badge>
+                )}
+                {selectedCategory && (
+                  <Badge variant="secondary" className="bg-green-600 text-white">
+                    Category: {selectedCategory}
+                  </Badge>
+                )}
+              </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-16 bg-gradient-to-r from-primary/5 to-secondary/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4 gradient-text">Stay Updated</h2>
-            <p className="text-muted-foreground mb-8">
-              Get notified when we publish new articles and insights
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input placeholder="Enter your email" className="flex-1" />
-              <Button className="btn-primary">Subscribe</Button>
-            </div>
+      {/* Posts Grid */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <div className="max-w-6xl mx-auto">
+            {filteredPosts.length === 0 ? (
+              <div className="text-center py-12">
+                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold mb-2 text-white">No posts found</h3>
+                <p className="text-gray-400 mb-6">
+                  {searchQuery || selectedCategory
+                    ? 'Try adjusting your search terms or filters'
+                    : 'No posts have been published yet'}
+                </p>
+                {(searchQuery || selectedCategory) && (
+                  <Button
+                    onClick={clearFilters}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPosts.map((post) => (
+                  <Link key={post.id} href={`/posts/${post.slug}`} className="group">
+                    <article className="bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-gray-700 hover:border-blue-500/30 h-[400px] flex flex-col">
+                      {/* Article Image */}
+                      <div className="relative h-48 overflow-hidden flex-shrink-0">
+                        <div
+                          className="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
+                          style={{
+                            backgroundImage:
+                              post.heroImage &&
+                              typeof post.heroImage === 'object' &&
+                              'url' in post.heroImage &&
+                              post.heroImage.url
+                                ? `url('${post.heroImage.url}')`
+                                : post.meta?.image &&
+                                  typeof post.meta.image === 'object' &&
+                                  'url' in post.meta.image &&
+                                  post.meta.image.url
+                                ? `url('${post.meta.image.url}')`
+                                : `url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80')`,
+                          }}
+                        />
+                        {/* Category Badge */}
+                        {post.categories && post.categories.length > 0 && (
+                          <div className="absolute top-3 left-3">
+                            <Badge className="bg-blue-600/90 text-white">
+                              {post.categories[0].title}
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Article Content */}
+                      <div className="p-6 flex-1 flex flex-col">
+                        {/* Meta Information */}
+                        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3 flex-shrink-0">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {post.publishedAt
+                              ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                })
+                              : 'No date'}
+                          </div>
+                          {post.authors && post.authors.length > 0 && (
+                            <div className="flex items-center gap-1">
+                              <User className="h-4 w-4" />
+                              {post.authors[0].name}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Article Title */}
+                        <h3 className="font-semibold text-lg mb-2 text-white flex-1">
+                          {post.title}
+                        </h3>
+
+                        {/* Article Description */}
+                        {post.meta?.description && (
+                          <p className="text-gray-300 mb-3 flex-1">
+                            {post.meta.description}
+                          </p>
+                        )}
+
+                        {/* Read More */}
+                        <div className="flex items-center justify-between mt-auto">
+                          <span className="text-blue-400 font-medium text-sm group-hover:text-blue-300 transition-colors">
+                            Read Article →
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
-
-      <PageClient />
     </div>
   )
-}
-
-export function generateMetadata(): Metadata {
-  return {
-    title: `BLOG APP Posts`,
-  }
 }
