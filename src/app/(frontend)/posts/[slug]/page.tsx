@@ -109,14 +109,14 @@ export default async function Post({ params: paramsPromise }: Args) {
       >
         {/* Enhanced Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
-        
+
         {/* Glassmorphism Navigation */}
         <div className="absolute top-0 left-0 right-0 p-6">
           <div className="flex justify-between items-center">
             <Link href="/posts">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="backdrop-blur-md bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-all duration-300"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -124,23 +124,23 @@ export default async function Post({ params: paramsPromise }: Args) {
               </Button>
             </Link>
             <div className="flex items-center space-x-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="backdrop-blur-md bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-all duration-300"
               >
                 <Headphones className="w-4 h-4" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="backdrop-blur-md bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-all duration-300"
               >
                 <Share2 className="w-4 h-4" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="backdrop-blur-md bg-white/10 text-white hover:bg-white/20 border border-white/20 transition-all duration-300"
               >
                 <MoreVertical className="w-4 h-4" />
@@ -161,12 +161,12 @@ export default async function Post({ params: paramsPromise }: Args) {
                   {post.categories[0].title}
                 </Badge>
               )}
-            
+
             {/* Title */}
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
               {post.title}
             </h1>
-            
+
             {/* Author and Meta Info */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-4 text-white/90">
@@ -189,16 +189,18 @@ export default async function Post({ params: paramsPromise }: Args) {
                   <span>5 min read</span>
                 </div>
               </div>
-              
+
               {/* Publication Date */}
               <div className="flex items-center space-x-2 text-white/80">
                 <Calendar className="w-4 h-4" />
                 <span>
-                  {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  }) : 'Recent'}
+                  {post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'Recent'}
                 </span>
               </div>
             </div>
@@ -224,17 +226,17 @@ export default async function Post({ params: paramsPromise }: Args) {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300"
                 >
                   <Heart className="w-4 h-4 mr-2" />
                   Save
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300"
                 >
                   <Share2 className="w-4 h-4 mr-2" />
@@ -280,12 +282,12 @@ export default async function Post({ params: paramsPromise }: Args) {
               ) : (
                 <>
                   <p className="text-white/90 leading-relaxed mb-6 text-lg">
-                    This is the content of your article. The actual content from your database will be
-                    displayed here with beautiful typography and modern styling.
+                    This is the content of your article. The actual content from your database will
+                    be displayed here with beautiful typography and modern styling.
                   </p>
                   <p className="text-white/90 leading-relaxed mb-6 text-lg">
-                    When you add content through the admin panel, it will appear in this section with
-                    proper formatting and enhanced readability.
+                    When you add content through the admin panel, it will appear in this section
+                    with proper formatting and enhanced readability.
                   </p>
                 </>
               )}
@@ -301,7 +303,11 @@ export default async function Post({ params: paramsPromise }: Args) {
             <h2 className="text-2xl font-bold text-white mb-8 text-center">Related Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedPosts.docs.map((relatedPost) => (
-                <Link key={relatedPost.id} href={`/posts/${relatedPost.slug}`} className="block group">
+                <Link
+                  key={relatedPost.id}
+                  href={`/posts/${relatedPost.slug}`}
+                  className="block group"
+                >
                   <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 group-hover:scale-105">
                     <div className="flex items-start space-x-4">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
