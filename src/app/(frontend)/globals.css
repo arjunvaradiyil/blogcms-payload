@@ -59,6 +59,88 @@
 }
 
 @layer components {
+  /* Modern Glassmorphism Effects */
+  .glass {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply backdrop-blur-md bg-black/20 border border-white/10;
+  }
+  
+  .glass-card {
+    @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl shadow-2xl;
+  }
+
+  /* Modern Gradients */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-purple-500 to-pink-500;
+  }
+  
+  .gradient-secondary {
+    @apply bg-gradient-to-r from-blue-500 to-purple-500;
+  }
+  
+  .gradient-hero {
+    @apply bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+
+  /* Modern Animations */
+  .hover-lift {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-xl;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/25;
+  }
+  
+  .fade-in {
+    @apply animate-in fade-in duration-500;
+  }
+  
+  .slide-up {
+    @apply animate-in slide-in-from-bottom-4 duration-500;
+  }
+
+  /* Modern Typography */
+  .text-gradient {
+    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  }
+
+  /* Modern Buttons */
+  .btn-modern {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+  }
+  
+  .btn-primary-modern {
+    @apply btn-modern gradient-primary text-white hover:shadow-lg hover:shadow-purple-500/25;
+  }
+  
+  .btn-ghost-modern {
+    @apply btn-modern bg-white/10 text-white border border-white/20 hover:bg-white/20;
+  }
+
+  /* Modern Cards */
+  .card-modern {
+    @apply glass-card p-6 hover-lift;
+  }
+  
+  .card-hero {
+    @apply glass-card p-8 -mt-20 relative z-10;
+  }
+
   /* Mobile-first blog card styles */
   .mobile-blog-card {
     @apply bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl;
@@ -121,10 +203,6 @@
     @apply bg-gray-800 border border-gray-700 rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-primary/20;
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent;
-  }
-
   .btn-primary {
     @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300;
   }
@@ -135,40 +213,37 @@
 
   /* Mobile header styles */
   .mobile-header {
-    @apply fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md border-b border-gray-700;
+    @apply fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/20;
   }
 
   .mobile-nav {
     @apply flex items-center justify-between p-4;
   }
 
-  /* Mobile search styles */
   .mobile-search {
-    @apply bg-gray-800 rounded-xl shadow-lg p-4 mb-6;
+    @apply relative;
   }
 
   .mobile-search-input {
-    @apply w-full px-4 py-3 border border-gray-600 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    @apply w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60;
   }
 
-  /* Mobile article styles */
   .mobile-article-content {
-    @apply bg-gray-800 rounded-t-3xl -mt-6 relative z-10 p-6;
+    @apply prose prose-invert max-w-none;
   }
 
   .mobile-article-actions {
-    @apply flex items-center justify-between py-4 border-t border-gray-700;
+    @apply flex items-center justify-between py-4 border-t border-white/10;
   }
 
   .mobile-action-btn {
-    @apply flex items-center space-x-2 text-gray-300 hover:text-white transition-colors;
+    @apply flex items-center space-x-2 text-white/70 hover:text-white transition-colors;
   }
 
-  /* Animations */
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(30px);
     }
     to {
       opacity: 1;
